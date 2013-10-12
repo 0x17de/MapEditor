@@ -1,6 +1,8 @@
 #include <iostream>
+#include <sstream>
 #include <cmath>
 #include <GL/gl.h>
+#include <GL/glut.h>
 #include <SDL2/SDL.h>
 #include "LevelView.h"
 #include "Gui.h"
@@ -35,7 +37,8 @@ LevelView::LevelView(Window* window)
     window(window),
     blockSize(50),
     offset{{0, 0}},
-    level()
+    level(),
+    levelViewKeys{}
 {
     window->onEvent.add("LevelView", [&] (Window &w, SDL_Event &event) {
         if (w.getActiveView() != ActiveView::LEVEL)
@@ -104,6 +107,12 @@ struct Mouse
             glEnd();
             glDisable(GL_BLEND);
         }
+        glRasterPos2i(cursorPosition[0] + 16, cursorPosition[1] - 16);
+        stringstream ss;
+        auto gamePosition = SpaceConverter(view).screenToGamei(cursorPosition);
+        ss << gamePosition[0] << ":" << gamePosition[1];
+        for (char c : ss.str())
+            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c);
     }
     Window *window;
     LevelView *view;

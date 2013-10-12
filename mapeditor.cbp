@@ -39,6 +39,7 @@
 		<Linker>
 			<Add library="SDL2" />
 			<Add library="GL" />
+			<Add library="glut" />
 		</Linker>
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Gui.cpp" />
@@ -48,6 +49,8 @@
 		<Unit filename="src/Level.h" />
 		<Unit filename="src/LevelView.cpp" />
 		<Unit filename="src/LevelView.h" />
+		<Unit filename="src/TileMap.cpp" />
+		<Unit filename="src/TileMap.h" />
 		<Unit filename="src/TileView.cpp" />
 		<Unit filename="src/TileView.h" />
 		<Extensions>

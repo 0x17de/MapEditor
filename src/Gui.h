@@ -10,6 +10,7 @@
 #include <SDL2/SDL.h>
 
 #include "LevelView.h"
+#include "TileMap.h"
 
 class Gui;
 
@@ -68,6 +69,7 @@ public:
 
     std::array<int,2> getCursorPosition();
     std::array<int,2> getDimensions();
+    TileMap *getTileMap();
     void flip();
 
     std::function<bool()> onClose;
@@ -88,6 +90,7 @@ private:
     SDL_Renderer* renderer;
     SDL_Event event;
 
+    TileMap tileMap;
     ActiveView activeView;
 
     friend Gui;

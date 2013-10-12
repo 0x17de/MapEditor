@@ -1,6 +1,7 @@
+#include <iostream>
+#include <GL/glut.h>
 #include "Gui.h"
 
-#include <iostream>
 using namespace std;
 
 Window::Window(const std::string& name, int w, int h)
@@ -11,6 +12,10 @@ Window::Window(const std::string& name, int w, int h)
 {
     window = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    int argCount = 1;
+    char progName[] = "mapeditor";
+    char *argValues[] = {progName, nullptr};
+    glutInit(&argCount, argValues);
 }
 
 Window::~Window()
@@ -28,6 +33,11 @@ void Window::close()
         SDL_DestroyWindow(window);
         window = 0;
     }
+}
+
+TileMap *Window::getTileMap()
+{
+    return &tileMap;
 }
 
 std::array<int,2> Window::getCursorPosition()
