@@ -13,6 +13,8 @@ struct LevelViewKeys
     bool arrowDown;
     bool arrowLeft;
     bool arrowRight;
+    bool zoomIn;
+    bool zoomOut;
 };
 
 struct OperationMoveView;

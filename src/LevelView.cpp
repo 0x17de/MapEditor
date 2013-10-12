@@ -74,6 +74,12 @@ LevelView::LevelView(Window* window)
             case SDLK_LEFT:
                 this->levelViewKeys.arrowLeft = pressed;
                 break;
+            case SDLK_KP_PLUS:
+                this->levelViewKeys.zoomIn = pressed;
+                break;
+            case SDLK_KP_MINUS:
+                this->levelViewKeys.zoomOut = pressed;
+                break;
             }
         }
     });
@@ -208,9 +214,23 @@ struct LevelDrawer
 
 void LevelView::tick()
 {
+    int zoomModifier = (levelViewKeys.zoomIn ? 1 : 0) + (levelViewKeys.zoomOut ? -1 : 0);
+    int oldBlockSize = this->blockSize;
+    this->blockSize += zoomModifier;
+    if (this->blockSize < 1)
+        this->blockSize = 1;
+    auto dimension = getDimensions();
+
+    std::array<float,2> difference = {{
+        (dimension[0] / float(oldBlockSize) - dimension[0] / float(this->blockSize)) / 2.0,
+        (dimension[1] / float(oldBlockSize) - dimension[1] / float(this->blockSize)) / 2.0
+    }};
+    moveOffset(difference);
+
+    int blockSize = getBlockSize();
     moveOffset({{
-        (levelViewKeys.arrowRight ? 0.1f : 0.0f) + (levelViewKeys.arrowLeft ? -0.1f : 0.0f),
-        (levelViewKeys.arrowUp ? 0.1f : 0.0f) + (levelViewKeys.arrowDown ? -0.1f : 0.0f),
+        ((levelViewKeys.arrowRight ? 5.0f : 0.0f) + (levelViewKeys.arrowLeft ? -5.0f : 0.0f)) / blockSize,
+        ((levelViewKeys.arrowUp ? 5.0f : 0.0f) + (levelViewKeys.arrowDown ? -5.0f : 0.0f)) / blockSize,
     }});
 
     glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
