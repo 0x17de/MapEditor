@@ -62,8 +62,7 @@ void Window::idle()
                         cursorPosition[1] = getDimensions()[1] - event.motion.y;
                     }
 
-                    for (auto &cb : onEvent)
-                        cb(*this, event);
+                    onEvent(*this, event);
                 }
             }
             if (window && onIdle)
@@ -73,16 +72,10 @@ void Window::idle()
         {
             if (waitEvent())
             {
-                for (auto &cb : onEvent)
-                    cb(*this, event);
+                onEvent(*this, event);
             }
         }
     }
-}
-
-void Window::addOnEventCallback(EventCallback cb)
-{
-    onEvent.push_back(cb);
 }
 
 bool Window::peekEvent()

@@ -10,14 +10,23 @@ using namespace std;
 struct SpaceConverter
 {
     SpaceConverter(LevelView *levelView) : levelView(levelView) {};
-    std::array<int,2> screenToGame(std::array<int,2> screenPosition) {
+
+    std::array<float,2> screenToGamef(std::array<int,2> screenPosition) {
         float blockSize = levelView->getBlockSize();
-        return std::array<int,2>{{int(screenPosition[0] / blockSize), int(screenPosition[1] / blockSize)}};
+        auto offset = levelView->getOffset();
+        return std::array<float,2>{{(screenPosition[0] + offset[0] * blockSize) / blockSize, (screenPosition[1] + offset[1] * blockSize) / blockSize}};
+    };
+    std::array<int,2> screenToGamei(std::array<int,2> screenPosition) {
+        int blockSize = levelView->getBlockSize();
+        auto offset = levelView->getOffset();
+        return std::array<int,2>{{int((screenPosition[0] + offset[0] * blockSize) / blockSize), int((screenPosition[1] + offset[1] * blockSize) / blockSize)}};
     };
     std::array<int,2> gameToScreen(std::array<float,2> gamePosition) {
         float blockSize = levelView->getBlockSize();
-        return std::array<int,2>{{int(gamePosition[0] * blockSize), int(gamePosition[1] * blockSize)}};
+        auto offset = levelView->getOffset();
+        return std::array<int,2>{{int((gamePosition[0] - offset[0]) * blockSize), int((gamePosition[1] - offset[1]) * blockSize)}};
     };
+
     LevelView *levelView;
 };
 
@@ -28,19 +37,40 @@ LevelView::LevelView(Window* window)
     offset{{0, 0}},
     level()
 {
-    window->addOnEventCallback([&] (Window &w, SDL_Event &event) {
+    window->onEvent.add("LevelView", [&] (Window &w, SDL_Event &event) {
         if (w.getActiveView() != ActiveView::LEVEL)
             return;
 
         if (event.type == SDL_EventType::SDL_MOUSEBUTTONDOWN)
+        {
             if (event.button.button == SDL_BUTTON_LEFT)
                 cout << "Click" << endl;
-        if (event.type == SDL_EventType::SDL_MOUSEBUTTONUP)
+        }
+        else if (event.type == SDL_EventType::SDL_MOUSEBUTTONUP)
         {
             if (event.button.button == SDL_BUTTON_LEFT)
             {
-                level.setBlock(SpaceConverter(this).screenToGame(w.getCursorPosition()),
+                level.setBlock(SpaceConverter(this).screenToGamei(w.getCursorPosition()),
                                Block(BlockType::GRASS, BlockFormType::FULL));
+            }
+        }
+        else if (event.type == SDL_EventType::SDL_KEYDOWN || event.type == SDL_EventType::SDL_KEYUP)
+        {
+            bool pressed = event.type == SDL_EventType::SDL_KEYDOWN;
+            switch(event.key.keysym.sym)
+            {
+            case SDLK_UP:
+                this->levelViewKeys.arrowUp = pressed;
+                break;
+            case SDLK_DOWN:
+                this->levelViewKeys.arrowDown = pressed;
+                break;
+            case SDLK_RIGHT:
+                this->levelViewKeys.arrowRight = pressed;
+                break;
+            case SDLK_LEFT:
+                this->levelViewKeys.arrowLeft = pressed;
+                break;
             }
         }
     });
@@ -57,10 +87,12 @@ struct Mouse
             glVertex3f(cursorPosition[0], cursorPosition[1], 0.0f);
         glEnd();
         if (window->getActiveView() == ActiveView::LEVEL) {
-            auto gamePos = SpaceConverter(view).screenToGame(cursorPosition);
+            auto gamePos = cursorPosition;
             int blockSize = view->getBlockSize();
-            gamePos[0] *= blockSize;
-            gamePos[1] *= blockSize;
+            auto offset = view->getOffset();
+            std::array<int,2> gamePosDiff = {{int(gamePos[0] + offset[0] * blockSize) % blockSize, int(gamePos[1] + offset[1] * blockSize) % blockSize}};
+            gamePos[0] -= gamePosDiff[0];
+            gamePos[1] -= gamePosDiff[1];
             glEnable(GL_BLEND);
             glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_ONE);
             glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
@@ -89,13 +121,14 @@ struct Grid
         glBegin(GL_LINES);
             auto dimensions = levelView->getDimensions();
             auto offset = levelView->getOffset();
+
             int blockSize = levelView->getBlockSize();
-            for(int i = offset[1] % blockSize; i < dimensions[1]; i += blockSize)
+            for(int i = int(-offset[1] * blockSize) % blockSize; i < dimensions[1]; i += blockSize)
             {
                 glVertex3f(0.0f, i, 0.0f);
                 glVertex3f(dimensions[0], i, 0.0f);
             }
-            for(int i = offset[0] % blockSize; i < dimensions[0]; i += blockSize)
+            for(int i = int(-offset[0] * blockSize) % blockSize; i < dimensions[0]; i += blockSize)
             {
                 glVertex3f(i, 0.0f, 0.0f);
                 glVertex3f(i, dimensions[1], 0.0f);
@@ -110,7 +143,7 @@ struct Grid
 struct BlockDrawer
 {
     BlockDrawer(LevelView* levelView) : levelView(levelView) {};
-    void draw(int x, int y, Block* block)
+    void draw(float x, float y, Block* block)
     {
         switch(block->getType())
         {
@@ -121,7 +154,7 @@ struct BlockDrawer
             break;
         }
     }
-    void drawInvalid(int x, int y, Block* block)
+    void drawInvalid(float x, float y, Block* block)
     {
         int blockSize = levelView->getBlockSize();
         glColor3f(1.0f, 0.0f, 1.0f);
@@ -145,16 +178,19 @@ struct LevelDrawer
         auto dimensions = levelView->getDimensions();
         int blockSize = levelView->getBlockSize();
 
-        int maxx = std::ceil(float(dimensions[0]) / float(blockSize));
-        int maxy = std::ceil(float(dimensions[1]) / float(blockSize));
+        auto offset = levelView->getOffset();
+
+        int maxx = std::ceil(float(dimensions[0]) / float(blockSize) + offset[0]);
+        int maxy = std::ceil(float(dimensions[1]) / float(blockSize) + offset[1]);
+
         BlockDrawer blockDrawer(levelView);
-        for(int j = 0; j < maxy; ++j)
+        for(int j = offset[1]; j < maxy; ++j)
         {
-            for(int i = 0; i < maxx; ++i)
+            for(int i = offset[0]; i < maxx; ++i)
             {
                 Block* block = l.getBlock({{i, j}});
                 if (block != nullptr)
-                    blockDrawer.draw(i, j, block);
+                    blockDrawer.draw(i-offset[0], j-offset[1], block);
             }
         }
     }
@@ -163,6 +199,11 @@ struct LevelDrawer
 
 void LevelView::tick()
 {
+    moveOffset({{
+        (levelViewKeys.arrowRight ? 0.1f : 0.0f) + (levelViewKeys.arrowLeft ? -0.1f : 0.0f),
+        (levelViewKeys.arrowUp ? 0.1f : 0.0f) + (levelViewKeys.arrowDown ? -0.1f : 0.0f),
+    }});
+
     glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -185,9 +226,20 @@ std::array<int,2> LevelView::getDimensions()
     return window->getDimensions();
 }
 
-std::array<int,2> LevelView::getOffset()
+std::array<float,2> LevelView::getOffset()
 {
     return offset;
+}
+
+void LevelView::setOffset(const std::array<float,2> &newOffset)
+{
+    offset = newOffset;
+}
+
+void LevelView::moveOffset(const std::array<float,2> &moveDistance)
+{
+    offset[0] += moveDistance[0];
+    offset[1] += moveDistance[1];
 }
 
 int LevelView::getBlockSize()

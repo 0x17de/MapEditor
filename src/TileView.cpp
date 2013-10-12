@@ -8,7 +8,7 @@ TileView::TileView(Window *window)
 :
     window(window)
 {
-    window->addOnEventCallback([&] (Window &w, SDL_Event &event){
+    window->onEvent.add("TileView", [&] (Window &w, SDL_Event &event){
         if (w.getActiveView() != ActiveView::TILES)
             return;
     });

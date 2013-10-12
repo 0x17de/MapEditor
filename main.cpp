@@ -41,7 +41,7 @@ int main()
     LevelView levelView = w.createView<LevelView>();
     TileView tileView = w.createView<TileView>();
 
-    w.addOnEventCallback([] (Window &w, SDL_Event &event) {
+    w.onEvent.add("main", [] (Window &w, SDL_Event &event) {
         if (event.type == SDL_EventType::SDL_WINDOWEVENT)
             if (event.window.event == SDL_WINDOWEVENT_CLOSE)
                 w.close();

@@ -27,6 +27,8 @@ Block *Level::getBlock(std::array<int,2> position)
 
 void Level::setBlock(std::array<int,2> position, Block block)
 {
+    if (position[0] < 0 || position[1] < 0)
+        return;
     cout << "New block at: " << position[0] << ":" << position[1] << endl;
     while (rows.size() <= position[1])
         rows.push_back(vector<Block>());

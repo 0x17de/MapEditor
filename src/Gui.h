@@ -4,7 +4,7 @@
 #include <string>
 #include <functional>
 #include <array>
-#include <vector>
+#include <map>
 #include <type_traits>
 
 #include <SDL2/SDL.h>
@@ -18,6 +18,35 @@ enum class ActiveView
     NONE,
     LEVEL,
     TILES
+};
+
+template <class T>
+struct SetableCallback
+{
+    typedef std::function<T> EventCallback;
+    std::map<std::string, EventCallback> callbacks;
+
+    void add(const std::string &key, EventCallback cb)
+    {
+        callbacks.insert(std::make_pair(key, cb));
+    }
+
+    void remove(const std::string &key)
+    {
+        callbacks.erase(key);
+    }
+
+    template <class ...U>
+    void operator()(U&&... args)
+    {
+        for(auto cbit : callbacks)
+            cbit.second(std::forward<U>(args)...);
+    }
+
+    auto size() -> decltype(callbacks.size())
+    {
+        return callbacks.size();
+    }
 };
 
 class Window
@@ -44,9 +73,7 @@ public:
     std::function<bool()> onClose;
     std::function<void(Window &w)> onIdle;
 
-    typedef std::function<void(Window &w, SDL_Event &event)> EventCallback;
-    void addOnEventCallback(EventCallback cb);
-    std::vector<EventCallback> onEvent;
+    SetableCallback<void(Window &w, SDL_Event &event)> onEvent;
 
     ActiveView getActiveView();
     void setActiveView(ActiveView activeView);
