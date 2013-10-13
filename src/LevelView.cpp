@@ -212,6 +212,11 @@ struct LevelDrawer
     LevelView *levelView;
 };
 
+void LevelView::setTileView(TileView* tileView)
+{
+    this->tileView = tileView;
+}
+
 void LevelView::tick()
 {
     int zoomModifier = (levelViewKeys.zoomIn ? 1 : 0) + (levelViewKeys.zoomOut ? -1 : 0);
@@ -222,8 +227,8 @@ void LevelView::tick()
     auto dimension = getDimensions();
 
     std::array<float,2> difference = {{
-        (dimension[0] / float(oldBlockSize) - dimension[0] / float(this->blockSize)) / 2.0,
-        (dimension[1] / float(oldBlockSize) - dimension[1] / float(this->blockSize)) / 2.0
+        (dimension[0] / float(oldBlockSize) - dimension[0] / float(this->blockSize)) / 2.0f,
+        (dimension[1] / float(oldBlockSize) - dimension[1] / float(this->blockSize)) / 2.0f
     }};
     moveOffset(difference);
 

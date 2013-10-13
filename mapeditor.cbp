@@ -5,6 +5,7 @@
 		<Option title="mapeditor" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="src/;" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/mapeditor" prefix_auto="1" extension_auto="1" />
@@ -40,11 +41,16 @@
 			<Add library="SDL2" />
 			<Add library="GL" />
 			<Add library="glut" />
+			<Add library="SDL2_image" />
 		</Linker>
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Gui.cpp" />
 		<Unit filename="src/Gui.h" />
 		<Unit filename="src/IView.h" />
+		<Unit filename="src/Image.cpp" />
+		<Unit filename="src/Image.h" />
+		<Unit filename="src/ImageLoader.cpp" />
+		<Unit filename="src/ImageLoader.h" />
 		<Unit filename="src/Level.cpp" />
 		<Unit filename="src/Level.h" />
 		<Unit filename="src/LevelView.cpp" />
@@ -53,6 +59,8 @@
 		<Unit filename="src/TileMap.h" />
 		<Unit filename="src/TileView.cpp" />
 		<Unit filename="src/TileView.h" />
+		<Unit filename="src/Utils.cpp" />
+		<Unit filename="src/Utils.h" />
 		<Extensions>
 			<envvars />
 			<code_completion />

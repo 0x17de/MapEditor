@@ -39,7 +39,8 @@ int main()
     }; */
 
     LevelView levelView = w.createView<LevelView>();
-    TileView tileView = w.createView<TileView>();
+    TileView tileView = w.createView<TileView>("tiles.cfg");
+    levelView.setTileView(&tileView);
 
     w.onEvent.add("main", [] (Window &w, SDL_Event &event) {
         if (event.type == SDL_EventType::SDL_WINDOWEVENT)
@@ -47,8 +48,17 @@ int main()
                 w.close();
 
         if (event.type == SDL_EventType::SDL_KEYDOWN)
-            if (event.key.keysym.sym == SDLK_SPACE)
+        {
+            switch(event.key.keysym.sym)
+            {
+            case SDLK_SPACE:
                 w.setActiveView(w.getActiveView() == ActiveView::LEVEL ? ActiveView::TILES : ActiveView::LEVEL);
+                break;
+            case SDLK_ESCAPE:
+                w.close();
+                break;
+            }
+        }
     });
 
     auto nextSecond = chrono::high_resolution_clock::now() + chrono::seconds(1);

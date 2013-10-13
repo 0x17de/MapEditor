@@ -11,7 +11,9 @@ public:
     void tick();
 
 private:
-    TileView(Window *window);
+    TileView(Window *window, const std::string &tileMapConfigName);
+
+    TileMap tileMap;
     Window *window;
 
     friend Window;

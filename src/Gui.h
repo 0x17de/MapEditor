@@ -60,11 +60,11 @@ public:
     bool peekEvent();
     bool waitEvent();
 
-    template<class T>
-    T createView()
+    template<class T, class... U>
+    T createView(U&&... args)
     {
         static_assert(std::is_base_of<IView,T>::value, "T must inherit from View");
-        return T(this);
+        return T(this, args...);
     }
 
     std::array<int,2> getCursorPosition();

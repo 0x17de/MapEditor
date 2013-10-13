@@ -20,6 +20,7 @@ struct LevelViewKeys
 struct OperationMoveView;
 
 class Window;
+class TileView;
 class LevelView : public IView
 {
 public:
@@ -29,6 +30,7 @@ public:
     std::array<float,2> getOffset();
     void setOffset(const std::array<float,2> &newOffset);
     void moveOffset(const std::array<float,2> &moveDistance);
+    void setTileView(TileView *tileView);
     int getBlockSize();
 
 private:
@@ -41,7 +43,9 @@ private:
     Level level;
     LevelViewKeys levelViewKeys;
 
-    std::unique_ptr<OperationMoveView> result();
+    TileView *tileView;
+
+    // @TODO: std::unique_ptr<OperationMoveView> operationMoveView;
 
     friend Window;
 };
