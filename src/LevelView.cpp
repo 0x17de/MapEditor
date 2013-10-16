@@ -13,20 +13,25 @@ struct SpaceConverter
 {
     SpaceConverter(LevelView *levelView) : levelView(levelView) {};
 
-    std::array<float,2> screenToGamef(std::array<int,2> screenPosition) {
-        float blockSize = levelView->getBlockSize();
-        auto offset = levelView->getOffset();
-        return std::array<float,2>{{(screenPosition[0] + offset[0] * blockSize) / blockSize, (screenPosition[1] + offset[1] * blockSize) / blockSize}};
-    };
-    std::array<int,2> screenToGamei(std::array<int,2> screenPosition) {
+    inline float _screenToGame(std::array<int,2> screenPosition, int x)
+    {
         int blockSize = levelView->getBlockSize();
         auto offset = levelView->getOffset();
-        return std::array<int,2>{{int((screenPosition[0] + offset[0] * blockSize) / blockSize), int((screenPosition[1] + offset[1] * blockSize) / blockSize)}};
+        return (screenPosition[x] + offset[x] * blockSize) / blockSize;
     };
-    std::array<int,2> gameToScreen(std::array<float,2> gamePosition) {
+    std::array<float,2> screenToGamef(std::array<int,2> screenPosition)
+    {
+        return {{std::floor(_screenToGame(screenPosition, 0)), std::floor(_screenToGame(screenPosition, 1))}};
+    };
+    std::array<int,2> screenToGamei(std::array<int,2> screenPosition)
+    {
+        return {{int(std::floor(_screenToGame(screenPosition, 0))), int(std::floor(_screenToGame(screenPosition, 1)))}};
+    };
+    std::array<int,2> gameToScreen(std::array<float,2> gamePosition)
+    {
         float blockSize = levelView->getBlockSize();
         auto offset = levelView->getOffset();
-        return std::array<int,2>{{int((gamePosition[0] - offset[0]) * blockSize), int((gamePosition[1] - offset[1]) * blockSize)}};
+        return {{int((gamePosition[0] - offset[0]) * blockSize), int((gamePosition[1] - offset[1]) * blockSize)}};
     };
 
     LevelView *levelView;

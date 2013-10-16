@@ -21,7 +21,7 @@ void TileView::tick()
         return;
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(0.0f, 0.0f, 0.0f, 0.8f);
 
     auto dimensions = window->getDimensions();
@@ -33,19 +33,24 @@ void TileView::tick()
     glEnd();
     glDisable(GL_BLEND);
 
+    glEnable(GL_BLEND);
     glEnable(GL_TEXTURE_2D);
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBindTexture(GL_TEXTURE_2D, tileMap.get());
-    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 0.0f);
-        glVertex3f(100.0f, 100.0f, 0.0f);
-        glTexCoord2f(1.0f, 0.0f);
-        glVertex3f(500, 100.0f, 0.0f);
-        glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(500.0f, 500.0f, 0.0f);
         glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(100.0f, 100.0f, 0.0f);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(500, 100.0f, 0.0f);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(500.0f, 500.0f, 0.0f);
+        glTexCoord2f(0.0f, 0.0f);
         glVertex3f(100.0f, 500.0f, 0.0f);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
 }
