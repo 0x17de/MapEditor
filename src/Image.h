@@ -21,6 +21,8 @@ public:
     GLTexture(const Image &image);
     ~GLTexture();
     GLuint get();
+    int getWidth();
+    int getHeight();
 
 private:
     int bbp, w, h;

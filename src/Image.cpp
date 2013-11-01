@@ -44,3 +44,13 @@ GLuint GLTexture::get()
 {
     return texture;
 }
+
+int GLTexture::getWidth()
+{
+    return w;
+}
+
+int GLTexture::getHeight()
+{
+    return h;
+}
