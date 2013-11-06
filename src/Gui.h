@@ -18,7 +18,8 @@ enum class ViewType
 {
     NONE,
     LEVEL,
-    TILES
+    TILES,
+    HELP
 };
 
 template <class T>

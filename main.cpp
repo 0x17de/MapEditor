@@ -4,6 +4,7 @@
 #include "Gui.h"
 #include "LevelView.h"
 #include "TileView.h"
+#include "HelpView.h"
 
 
 using namespace std;
@@ -41,8 +42,9 @@ int main()
     LevelView levelView = w.createView<LevelView>();
     TileView tileView = w.createView<TileView>("tiles.cfg");
     levelView.setTileView(&tileView);
+    HelpView helpView = w.createView<HelpView>();
 
-    w.onEvent.add("main", [] (Window &w, SDL_Event &event) {
+    w.onEvent.add("main", [&] (Window &w, SDL_Event &event) {
         if (event.type == SDL_EventType::SDL_WINDOWEVENT)
             if (event.window.event == SDL_WINDOWEVENT_CLOSE)
                 w.close();
@@ -52,7 +54,25 @@ int main()
             switch(event.key.keysym.sym)
             {
             case SDLK_SPACE:
-                w.setActiveView(w.getActiveView() == ViewType::LEVEL ? ViewType::TILES : ViewType::LEVEL);
+                if (w.getActiveView() == ViewType::LEVEL)
+                    w.setActiveView(ViewType::TILES);
+                else if (w.getActiveView() == ViewType::TILES)
+                    w.setActiveView(ViewType::LEVEL);
+
+                break;
+            case SDLK_F1:
+                {
+                    ViewType activeView = w.getActiveView();
+                    if (activeView != ViewType::HELP)
+                    {
+                        helpView.initHelp(activeView);
+                        w.setActiveView(ViewType::HELP);
+                    }
+                    else
+                    {
+                        w.setActiveView(helpView.getPreviousViewType());
+                    }
+                }
                 break;
             case SDLK_ESCAPE:
                 w.close();
