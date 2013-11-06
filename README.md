@@ -8,3 +8,4 @@ Simple map editor with SDL2
 
 Missing:
 - Save/load maps
+- CMake project file + build instructions
