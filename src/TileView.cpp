@@ -9,12 +9,13 @@ using namespace std;
 
 TileView::TileView(Window *window, const std::string &tileMapConfigName)
 :
-    window(window)
+    window(window),
+    activeTile(0)
 {
     tileMap.load(tileMapConfigName);
 
     window->onEvent.add("TileView", [&] (Window &w, SDL_Event &event){
-        if (w.getActiveView() != ActiveView::TILES)
+        if (w.getActiveView() != ViewType::TILES)
             return;
         if (event.type == SDL_EventType::SDL_MOUSEBUTTONDOWN)
         {
@@ -31,6 +32,7 @@ TileView::TileView(Window *window, const std::string &tileMapConfigName)
             Tile *t = tileMap.getTile({{texX, texY}});
             if (t != 0)
             {
+                activeTile = t;
                 cout << t->getName() << endl;
             }
         }
@@ -39,7 +41,7 @@ TileView::TileView(Window *window, const std::string &tileMapConfigName)
 
 void TileView::tick()
 {
-    if (window->getActiveView() != ActiveView::TILES)
+    if (window->getActiveView() != ViewType::TILES)
         return;
 
     glEnable(GL_BLEND);
@@ -75,4 +77,9 @@ void TileView::tick()
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);
+}
+
+const Tile *TileView::getActiveTile() const
+{
+    return activeTile;
 }

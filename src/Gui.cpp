@@ -8,7 +8,7 @@ Window::Window(const std::string& name, int w, int h)
 :
     dimensions{{w,h}},
     cursorPosition{{w/2,h/2}},
-    activeView(ActiveView::LEVEL)
+    activeView(ViewType::LEVEL)
 {
     window = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -98,12 +98,12 @@ bool Window::waitEvent()
     return SDL_WaitEvent(&event);
 }
 
-ActiveView Window::getActiveView()
+ViewType Window::getActiveView()
 {
     return activeView;
 }
 
-void Window::setActiveView(ActiveView activeView)
+void Window::setActiveView(ViewType activeView)
 {
     this->activeView = activeView;
 }

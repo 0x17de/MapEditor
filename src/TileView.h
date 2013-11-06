@@ -1,20 +1,23 @@
 #ifndef TILEVIEW_H_INCLUDED
 #define TILEVIEW_H_INCLUDED
 
-
+#include "TileMap.h"
 #include "IView.h"
 
+class Tile;
 class Window;
 class TileView : public IView
 {
 public:
     void tick();
+    const Tile *getActiveTile() const;
 
 private:
     TileView(Window *window, const std::string &tileMapConfigName);
 
-    TileMap tileMap;
     Window *window;
+    TileMap tileMap;
+    Tile *activeTile;
 
     friend Window;
 };

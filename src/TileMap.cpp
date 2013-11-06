@@ -8,19 +8,20 @@
 
 using namespace std;
 
-Tile::Tile(const string &name, std::array<int,4> rect)
+Tile::Tile(const string &name, std::array<int,4> rect, std::array<float,4> texCoords)
 :
     name(name),
-    rect(rect)
+    rect(rect),
+    texCoords(texCoords)
 {
 }
 
-string Tile::getName()
+string Tile::getName() const
 {
     return name;
 }
 
-bool Tile::isPointInRect(std::array<int, 2> point)
+bool Tile::isPointInRect(std::array<int, 2> point) const
 {
     return point[0] >= rect[0] && point[0] < rect[2] && point[1] >= rect[1] && point[1] < rect[3];
 }
@@ -71,7 +72,10 @@ void TileMap::load(const std::string &configFileName)
                         rect[2] += rect[0];
                         rect[3] += rect[1];
                         cout << name << ":" << rect[0] << ":" << rect[1] << ":" << rect[2] << ":" << rect[3] << endl;
-                        tiles.emplace_back(name, rect);
+
+                        float texWidth = texture->getWidth();
+                        std::array<float,4> texCoords{{rect[0] / texWidth, rect[1] / texWidth, rect[2] / texWidth, rect[3] / texWidth}};
+                        tiles.emplace_back(name, rect, texCoords);
                     }
                 }
             }

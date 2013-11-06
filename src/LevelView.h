@@ -31,7 +31,8 @@ public:
     void setOffset(const std::array<float,2> &newOffset);
     void moveOffset(const std::array<float,2> &moveDistance);
     void setTileView(TileView *tileView);
-    int getBlockSize();
+    const TileView *getTileView() const;
+    int getBlockSize() const;
 
 private:
     LevelView(Window *window);

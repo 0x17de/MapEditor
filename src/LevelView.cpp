@@ -5,6 +5,7 @@
 #include <GL/glut.h>
 #include <SDL2/SDL.h>
 #include "LevelView.h"
+#include "TileView.h"
 #include "Gui.h"
 
 using namespace std;
@@ -46,7 +47,7 @@ LevelView::LevelView(Window* window)
     levelViewKeys{}
 {
     window->onEvent.add("LevelView", [&] (Window &w, SDL_Event &event) {
-        if (w.getActiveView() != ActiveView::LEVEL)
+        if (w.getActiveView() != ViewType::LEVEL)
             return;
 
         if (event.type == SDL_EventType::SDL_MOUSEBUTTONDOWN)
@@ -92,7 +93,7 @@ LevelView::LevelView(Window* window)
 
 struct Mouse
 {
-    Mouse(Window *window, LevelView *view) : window(window), view(view) {};
+    Mouse(Window *window, LevelView *levelView) : window(window), levelView(levelView) {};
     void draw() {
         auto cursorPosition = window->getCursorPosition();
         glColor3f(0.0f, 1.0f, 0.0f);
@@ -100,10 +101,10 @@ struct Mouse
         glBegin(GL_POINTS);
             glVertex3f(cursorPosition[0], cursorPosition[1], 0.0f);
         glEnd();
-        if (window->getActiveView() == ActiveView::LEVEL) {
+        if (window->getActiveView() == ViewType::LEVEL) {
             auto gamePos = cursorPosition;
-            int blockSize = view->getBlockSize();
-            auto offset = view->getOffset();
+            int blockSize = levelView->getBlockSize();
+            auto offset = levelView->getOffset();
             std::array<int,2> gamePosDiff = {{int(gamePos[0] + offset[0] * blockSize) % blockSize, int(gamePos[1] + offset[1] * blockSize) % blockSize}};
             gamePos[0] -= gamePosDiff[0];
             gamePos[1] -= gamePosDiff[1];
@@ -118,15 +119,28 @@ struct Mouse
             glEnd();
             glDisable(GL_BLEND);
         }
+
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
         glRasterPos2i(cursorPosition[0] + 16, cursorPosition[1] - 16);
         stringstream ss;
-        auto gamePosition = SpaceConverter(view).screenToGamei(cursorPosition);
+        auto gamePosition = SpaceConverter(levelView).screenToGamei(cursorPosition);
         ss << gamePosition[0] << ":" << gamePosition[1];
         for (char c : ss.str())
             glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c);
+
+        glRasterPos2i(15, window->getDimensions()[1] - 15);
+        const Tile *activeTile = levelView->getTileView()->getActiveTile();
+        if (activeTile)
+        {
+            for (char c : activeTile->getName())
+                glutBitmapCharacter(GLUT_BITMAP_9_BY_15, c);
+        }
+        glDisable(GL_BLEND);
     }
     Window *window;
-    LevelView *view;
+    LevelView *levelView;
 };
 
 struct Grid
@@ -281,7 +295,12 @@ void LevelView::moveOffset(const std::array<float,2> &moveDistance)
     offset[1] += moveDistance[1];
 }
 
-int LevelView::getBlockSize()
+int LevelView::getBlockSize() const
 {
     return blockSize;
+}
+
+const TileView *LevelView::getTileView() const
+{
+    return tileView;
 }

@@ -14,7 +14,7 @@
 
 class Gui;
 
-enum class ActiveView
+enum class ViewType
 {
     NONE,
     LEVEL,
@@ -77,8 +77,8 @@ public:
 
     SetableCallback<void(Window &w, SDL_Event &event)> onEvent;
 
-    ActiveView getActiveView();
-    void setActiveView(ActiveView activeView);
+    ViewType getActiveView();
+    void setActiveView(ViewType activeView);
 
 private:
     Window(const std::string &name, int w, int h);
@@ -91,7 +91,7 @@ private:
     SDL_Event event;
 
     TileMap tileMap;
-    ActiveView activeView;
+    ViewType activeView;
 
     friend Gui;
 };

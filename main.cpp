@@ -52,7 +52,7 @@ int main()
             switch(event.key.keysym.sym)
             {
             case SDLK_SPACE:
-                w.setActiveView(w.getActiveView() == ActiveView::LEVEL ? ActiveView::TILES : ActiveView::LEVEL);
+                w.setActiveView(w.getActiveView() == ViewType::LEVEL ? ViewType::TILES : ViewType::LEVEL);
                 break;
             case SDLK_ESCAPE:
                 w.close();

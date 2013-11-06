@@ -11,12 +11,13 @@
 class Tile
 {
 public:
-    Tile(const std::string &name, std::array<int,4> rect);
-    std::string getName();
-    bool isPointInRect(std::array<int,2> point);
+    Tile(const std::string &name, std::array<int,4> rect, std::array<float,4> texCoords);
+    std::string getName() const;
+    bool isPointInRect(std::array<int,2> point) const;
 private:
     std::string name;
     std::array<int,4> rect;
+    std::array<float,4> texCoords;
 };
 
 class TileMap
