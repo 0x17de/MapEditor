@@ -60,7 +60,7 @@ LevelView::LevelView(Window* window)
             if (event.button.button == SDL_BUTTON_LEFT)
             {
                 level.setBlock(SpaceConverter(this).screenToGamei(w.getCursorPosition()),
-                               Block(BlockType::GRASS, BlockFormType::FULL));
+                               Block(this->getTileView()->getActiveTile()));
             }
         }
         else if (event.type == SDL_EventType::SDL_KEYDOWN || event.type == SDL_EventType::SDL_KEYUP)
@@ -179,27 +179,35 @@ struct BlockDrawer
     BlockDrawer(LevelView* levelView) : levelView(levelView) {};
     void draw(float x, float y, Block* block)
     {
-        switch(block->getType())
+        if (block->getTile() != 0)
         {
-        case BlockType::NONE:
-            break;
-        default:
-            drawInvalid(x, y, block);
-            break;
+            glEnable(GL_TEXTURE_2D);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+            levelView->getTileView()->getTileMap()->getTexture()->bind();
+            const Tile* tile = block->getTile();
+            auto texCoords = tile->getTexCoords();
+
+            int blockSize = levelView->getBlockSize();
+            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+            x *= blockSize;
+            y *= blockSize;
+            glBegin(GL_QUADS);
+                glTexCoord2f(texCoords[0], texCoords[3]);
+                glVertex3f(x, y, 0.0f);
+                glTexCoord2f(texCoords[2], texCoords[3]);
+                glVertex3f(x + blockSize, y, 0.0f);
+                glTexCoord2f(texCoords[2], texCoords[1]);
+                glVertex3f(x + blockSize, y + blockSize, 0.0f);
+                glTexCoord2f(texCoords[0], texCoords[1]);
+                glVertex3f(x, y + blockSize, 0.0f);
+            glEnd();
+
+            GLTexture::unbind();
+            glDisable(GL_BLEND);
+            glDisable(GL_TEXTURE_2D);
         }
-    }
-    void drawInvalid(float x, float y, Block* block)
-    {
-        int blockSize = levelView->getBlockSize();
-        glColor3f(1.0f, 0.0f, 1.0f);
-        x *= blockSize;
-        y *= blockSize;
-        glBegin(GL_QUADS);
-            glVertex3f(x, y, 0.0f);
-            glVertex3f(x + blockSize, y, 0.0f);
-            glVertex3f(x + blockSize, y + blockSize, 0.0f);
-            glVertex3f(x, y + blockSize, 0.0f);
-        glEnd();
     }
     LevelView* levelView;
 };

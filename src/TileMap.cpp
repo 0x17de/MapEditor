@@ -21,6 +21,11 @@ string Tile::getName() const
     return name;
 }
 
+std::array<float,4> Tile::getTexCoords() const
+{
+    return texCoords;
+}
+
 bool Tile::isPointInRect(std::array<int, 2> point) const
 {
     return point[0] >= rect[0] && point[0] < rect[2] && point[1] >= rect[1] && point[1] < rect[3];
@@ -96,6 +101,11 @@ int TileMap::getWidth()
 int TileMap::getHeight()
 {
     return texture ? texture->getHeight() : 0;
+}
+
+const GLTexture *TileMap::getTexture() const
+{
+    return texture.get();
 }
 
 Tile *TileMap::getTile(std::array<int,2> point)

@@ -45,6 +45,15 @@ GLuint GLTexture::get()
     return texture;
 }
 
+void GLTexture::bind() const
+{
+    glBindTexture(GL_TEXTURE_2D, texture);
+}
+void GLTexture::unbind()
+{
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 int GLTexture::getWidth()
 {
     return w;

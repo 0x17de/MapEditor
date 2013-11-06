@@ -5,36 +5,16 @@
 #include <vector>
 #include <array>
 
-enum class BlockType
-{
-    NONE,
-    GRASS,
-    STONE
-};
-
-enum class BlockFormType
-{
-    FULL,
-    S8,
-    S9,
-    S6,
-    S3,
-    S2,
-    S1,
-    S4,
-    S7,
-};
+class Tile;
 
 class Block
 {
 public:
-    Block(BlockType blockType = BlockType::NONE, BlockFormType formType = BlockFormType::FULL);
+    Block(const Tile* tile = 0);
+    const Tile* getTile() const;
 
-    BlockType getType();
-    BlockFormType getFormType();
-
-    BlockType blockType;
-    BlockFormType formType;
+private:
+    const Tile* tile;
 };
 
 class Level

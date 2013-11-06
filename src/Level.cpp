@@ -4,10 +4,9 @@
 
 using namespace std;
 
-Block::Block(BlockType blockType, BlockFormType formType)
+Block::Block(const Tile* tile)
 :
-    blockType(blockType),
-    formType(formType)
+    tile(tile)
 {}
 
 Level::Level()
@@ -38,12 +37,7 @@ void Level::setBlock(std::array<int,2> position, Block block)
     cols[position[0]] = block;
 }
 
-BlockType Block::getType()
+const Tile* Block::getTile() const
 {
-    return blockType;
-}
-
-BlockFormType Block::getFormType()
-{
-    return formType;
+    return tile;
 }

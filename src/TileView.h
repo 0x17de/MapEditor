@@ -11,6 +11,7 @@ class TileView : public IView
 public:
     void tick();
     const Tile *getActiveTile() const;
+    const TileMap *getTileMap() const;
 
 private:
     TileView(Window *window, const std::string &tileMapConfigName);

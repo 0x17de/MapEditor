@@ -83,3 +83,8 @@ const Tile *TileView::getActiveTile() const
 {
     return activeTile;
 }
+
+const TileMap *TileView::getTileMap() const
+{
+    return &tileMap;
+}

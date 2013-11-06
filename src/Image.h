@@ -21,6 +21,8 @@ public:
     GLTexture(const Image &image);
     ~GLTexture();
     GLuint get();
+    void bind() const;
+    static void unbind();
     int getWidth();
     int getHeight();
 
