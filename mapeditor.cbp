@@ -46,6 +46,8 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Gui.cpp" />
 		<Unit filename="src/Gui.h" />
+		<Unit filename="src/HelpView.cpp" />
+		<Unit filename="src/HelpView.h" />
 		<Unit filename="src/IView.h" />
 		<Unit filename="src/Image.cpp" />
 		<Unit filename="src/Image.h" />
