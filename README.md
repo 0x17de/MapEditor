@@ -3,8 +3,10 @@ MapEditor
 
 Simple map editor with SDL2
 
-Press space to toggle tile view, use arrow keys to move.
+- Press space to toggle tile view, use arrow keys to move.
+- Click to place tiles.
+- (TODO) Right click to remove tiles.
 
 Missing:
-- Tile names are yet printed but not selected
+- Remove tiles
 - Save/load maps
