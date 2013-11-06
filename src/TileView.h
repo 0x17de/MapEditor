@@ -11,6 +11,7 @@ class TileView : public IView
 public:
     void tick();
     const Tile *getActiveTile() const;
+    void setActiveTile(const Tile *tile);
     const TileMap *getTileMap() const;
 
 private:
@@ -18,7 +19,7 @@ private:
 
     Window *window;
     TileMap tileMap;
-    Tile *activeTile;
+    const Tile *activeTile;
 
     friend Window;
 };

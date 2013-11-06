@@ -62,6 +62,15 @@ LevelView::LevelView(Window* window)
                 level.setBlock(SpaceConverter(this).screenToGamei(w.getCursorPosition()),
                                Block(this->getTileView()->getActiveTile()));
             }
+            else if (event.button.button == SDL_BUTTON_RIGHT)
+            {
+                level.setBlock(SpaceConverter(this).screenToGamei(w.getCursorPosition()),
+                               Block());
+            }
+            else if (event.button.button == SDL_BUTTON_MIDDLE)
+            {
+                this->tileView->setActiveTile(level.getBlock(SpaceConverter(this).screenToGamei(w.getCursorPosition()))->getTile());
+            }
         }
         else if (event.type == SDL_EventType::SDL_KEYDOWN || event.type == SDL_EventType::SDL_KEYUP)
         {
