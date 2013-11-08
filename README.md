@@ -23,3 +23,5 @@ How to compile on linux:
 
 Missing:
 - Save/load maps
+- Background/foreground layers (stackable)
+- Self definable events as layers (stackable) for e.g. damage, spawn, finish, ...
