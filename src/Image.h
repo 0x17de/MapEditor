@@ -27,7 +27,7 @@ public:
     int getHeight();
 
 private:
-    int bbp, w, h;
+    int bpp, w, h;
     GLenum format;
     GLuint texture;
 };

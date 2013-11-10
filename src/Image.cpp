@@ -18,7 +18,7 @@ const SDL_Surface* Image::getSurface() const
 GLTexture::GLTexture(const Image &image)
 {
     const SDL_Surface* surface = image.getSurface();
-    bbp = surface->format->BytesPerPixel;
+    bpp = surface->format->BytesPerPixel;
     w = surface->w;
     h = surface->h;
 
@@ -31,7 +31,7 @@ GLTexture::GLTexture(const Image &image)
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, bbp, w, h, 0, format, GL_UNSIGNED_BYTE, surface->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, bpp, w, h, 0, format, GL_UNSIGNED_BYTE, surface->pixels);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
