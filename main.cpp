@@ -97,6 +97,7 @@ int main()
 
         levelView.tick();
         tileView.tick();
+        helpView.tick();
 
         w.flip();
 

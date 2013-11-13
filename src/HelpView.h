@@ -19,6 +19,7 @@ private:
     HelpView(Window *window);
 
     ViewType activeView;
+    Window *window;
 };
 
 
